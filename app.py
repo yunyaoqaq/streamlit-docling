@@ -65,10 +65,11 @@ def export_documents(
     for conv_res in conv_results:
         if conv_res.status == ConversionStatus.SUCCESS:
             success_count += 1
-            doc_filename = conv_res.input.file.stem
+            # 使用完整文件名（包括原始扩展名）而不是仅 stem
+            doc_filename = conv_res.input.file.name  # 改为 .name 而不是 .stem
 
             if export_json:
-                fname = output_dir / f"{doc_filename}.json"
+                fname = output_dir / f"{doc_filename}.json"  # 在完整文件名后追加 .json
                 _log.info(f"writing JSON output to {fname}")
                 conv_res.document.save_as_json(filename=fname, image_mode=image_export_mode)
 

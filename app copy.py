@@ -111,20 +111,22 @@ def main():
     st.title("Docling 文档转换工具")
     st.write("上传文件并配置参数以将文档转换为指定格式。")
 
-    # 支持的所有文件扩展名
+    # 支持的所有文件扩展名，基于 InputFormat 和 FormatToExtensions
     supported_extensions = []
     for fmt in InputFormat:
-        # 从 FormatToExtensions 获取每种格式的扩展名
         extensions = FormatToExtensions.get(fmt, [])
+        # 只添加与 InputFormat 对应的扩展名
         supported_extensions.extend(extensions)
-    # 添加大写版本（例如 .PDF 和 .pdf）
-    supported_extensions = list(set(supported_extensions + [ext.upper() for ext in supported_extensions]))
+
+    # 去重并转换为小写（避免大小写重复）
+    supported_extensions = list(dict.fromkeys(supported_extensions))  # 去重
+    supported_extensions = [ext.lower() for ext in supported_extensions]  # 统一为小写
 
     # 文件上传，支持所有 InputFormat 定义的格式
     uploaded_files = st.file_uploader(
         "上传文件",
         accept_multiple_files=True,
-        type=supported_extensions,  # 使用 InputFormat 支持的所有扩展名
+        type=supported_extensions,  # 使用精确的扩展名列表
         help=f"支持格式: {', '.join(supported_extensions)}"
     )
 
